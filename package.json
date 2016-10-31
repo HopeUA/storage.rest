@@ -1,7 +1,10 @@
 {
-  "name": "storage.service",
+  "name": "storage.rest",
+  "description": "Storage Service",
   "version": "0.1.0",
   "main": "server/server.js",
+  "license": "MIT",
+  "author": "Sergey Sadovoi <sergey@hope.ua>",
   "scripts": {
     "dev": "NODE_PATH=. NODE_ENV=development node -r babel-register .",
     "test": "NODE_PATH=. NODE_ENV=test nyc ava --verbose --serial",
