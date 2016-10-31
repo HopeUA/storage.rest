@@ -1,0 +1,6 @@
+{
+  "service":{
+    "domain": "test",
+    "rootPath": "test/files"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "initial:before": {},
+  "initial": {
+    "./middlewares/HidePoweredBy": {}
+  },
+  "session": {},
+  "auth": {
+    "./middlewares/Auth": {}
+  },
+  "parse": {},
+  "routes": {
+    "./middlewares/Upload": {
+      "methods": ["POST"]
+    }
+  },
+  "files": {
+    "./middlewares/StaticAuthCheck": {
+      "methods": ["GET", "HEAD"]
+    },
+    "./middlewares/Static": {
+      "methods": ["GET", "HEAD"]
+    }
+  },
+  "final": {
+    "loopback#urlNotFound": {}
+  },
+  "final:after": {
+    "loopback#errorHandler": {}
+  }
+}

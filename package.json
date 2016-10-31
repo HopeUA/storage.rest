@@ -1,0 +1,48 @@
+{
+  "name": "storage.service",
+  "version": "0.1.0",
+  "main": "server/server.js",
+  "scripts": {
+    "dev": "NODE_PATH=. NODE_ENV=development node -r babel-register .",
+    "test": "NODE_PATH=. NODE_ENV=test nyc ava --verbose --serial",
+    "watch": "nodemon --exec npm run dev",
+    "report": "nyc report --reporter=html"
+  },
+  "dependencies": {
+    "@hope/error": "^1.0.1",
+    "babel-plugin-transform-async-to-generator": "^6.16.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
+    "babel-register": "^6.18.0",
+    "fs-extra-promise": "^0.4.1",
+    "loopback": "^2.36.0",
+    "loopback-boot": "^2.23.0",
+    "loopback-datasource-juggler": "^2.53.0",
+    "minimatch": "^3.0.3",
+    "node-fetch": "^1.6.3"
+  },
+  "babel": {
+    "plugins": [
+      "transform-es2015-modules-commonjs",
+      "transform-async-to-generator"
+    ],
+    "env": {
+      "test": {
+        "sourceMaps": "inline"
+      }
+    }
+  },
+  "ava": {
+    "babel": "inherit",
+    "require": [
+      "babel-register"
+    ]
+  },
+  "devDependencies": {
+    "ava": "^0.16.0",
+    "nock": "^9.0.2",
+    "nodemon": "^1.11.0",
+    "nyc": "^8.3.2",
+    "supertest": "^2.0.1",
+    "supertest-as-promised": "^4.0.1"
+  }
+}
