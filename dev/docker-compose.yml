@@ -1,0 +1,37 @@
+version: "2"
+
+services:
+  db:
+    image: hope/mongodb:3.2
+    container_name: db.storage
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./volumes/db:/data/db
+    networks:
+      - private
+
+  auth:
+    build: ./containers/auth
+    container_name: auth.storage
+    ports:
+      - "3001:3000"
+    networks:
+      - private
+
+  storage:
+    image: hope/nodejs:6
+    container_name: rest.storage
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../:/data/app
+      - ./volumes/storage:/data/storage
+    networks:
+      - private
+    working_dir: /data/app
+    entrypoint: npm run dev
+
+networks:
+  private:
+    driver: bridge

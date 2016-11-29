@@ -1,4 +1,14 @@
+sudo: required
+
 language: node_js
 node_js:
   - "6"
-  - "node"
+
+services:
+  - docker
+
+before_script:
+  - npm run docker-up
+  - sleep 10
+script:
+  - npm test

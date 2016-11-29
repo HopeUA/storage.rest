@@ -10,7 +10,7 @@ const config = App.get('service');
 
 module.exports = () => {
     return wrap(async (req, res) => {
-        if (!Acl.isGranted(req.user, 'files.write', req.path)) {
+        if (!Acl.isGranted(req.user, 'files:write', req.path)) {
             throw new ApiError({
                 status: 401,
                 message: 'Access denied'
