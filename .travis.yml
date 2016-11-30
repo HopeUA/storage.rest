@@ -2,13 +2,17 @@ sudo: required
 
 language: node_js
 node_js:
-  - "6"
+  - 6
+  - node
+matrix:
+  allow_failures:
+    - node_js: node
+  fast_finish: true
 
 services:
   - docker
 
 before_script:
   - npm run docker-up
-  - sleep 10
-script:
-  - npm test
+  - npm run dev &
+  - sleep 7

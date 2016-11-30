@@ -12,7 +12,7 @@
     }
   },
   "service":{
-    "domain": "domain",
+    "group": "default",
     "name": "storage",
     "rootPath": "files"
   }

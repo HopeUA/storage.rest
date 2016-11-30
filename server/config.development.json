@@ -1,11 +1,11 @@
 {
   "services": {
     "auth": {
-      "url": "http://auth.storage:3000/v1"
+      "url": "http://localhost:3001/v1"
     }
   },
   "service": {
-    "domain": "test",
-    "rootPath": "/data/storage"
+    "group": "test",
+    "rootPath": "dev/storage"
   }
 }

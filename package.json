@@ -1,6 +1,6 @@
 {
   "name": "storage.rest",
-  "description": "Storage Service",
+  "description": "Hope Storage Service",
   "version": "0.1.1",
   "main": "server/server.js",
   "license": "MIT",
@@ -33,5 +33,9 @@
   "devDependencies": {
     "newman": "^3.3.0",
     "nodemon": "^1.11.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HopeUA/storage.rest"
   }
 }

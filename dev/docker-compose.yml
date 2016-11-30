@@ -19,19 +19,6 @@ services:
     networks:
       - private
 
-  storage:
-    image: hope/nodejs:6
-    container_name: rest.storage
-    ports:
-      - "3000:3000"
-    volumes:
-      - ../:/data/app
-      - ./volumes/storage:/data/storage
-    networks:
-      - private
-    working_dir: /data/app
-    entrypoint: npm run dev
-
 networks:
   private:
     driver: bridge

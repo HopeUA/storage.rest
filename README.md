@@ -3,6 +3,6 @@
 * Auth
 
 ## Service Config
-* domain
+* group
 * name
 * rootPath – Absolute path where files will be stored

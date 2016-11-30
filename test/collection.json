@@ -1,215 +1,215 @@
 {
-	"variables": [],
-	"info": {
-		"name": "Storage REST Service",
-		"_postman_id": "35abf9d3-e623-a2fe-f5ce-fff98d11b54b",
-		"description": "",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "[Auth] Get access token",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": "/**\n * Check status and headers\n */ \ntests['Status code'] = responseCode.code === 201;\n\n/**\n * Check response body\n */ \nconst token = JSON.parse(responseBody);\ntests[\"Access granted\"] = !!token.accessToken;\n\n/**\n * Store data\n */\npostman.setEnvironmentVariable('accessToken', token.accessToken);\npostman.setEnvironmentVariable('refreshToken', token.refreshToken);\npostman.setEnvironmentVariable('adminUserId', token.userId);\n"
-					}
-				}
-			],
-			"request": {
-				"url": "{{auth.host}}/v1/token",
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "username",
-							"value": "admin@test.com",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "password",
-							"value": "test",
-							"type": "text",
-							"enabled": true
-						},
-						{
-							"key": "grant_type",
-							"value": "password",
-							"type": "text",
-							"enabled": true
-						}
-					]
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "[Auth] Create user",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": "/**\n * Check status and headers\n */ \ntests['Status code'] = responseCode.code === 201;\n\n/**\n * Check response body\n */\nconst user = JSON.parse(responseBody);\ntests['User created'] = user.id !== '';\n\n/**\n * Store data\n */\npostman.setEnvironmentVariable('testUserId', user.id);\n"
-					}
-				}
-			],
-			"request": {
-				"url": "{{auth.host}}/v1/users",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{accessToken}}",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"email\": \"storage@test.com\",\n    \"firstName\": \"Test\",\n    \"lastName\": \"User\",\n    \"password\": \"test\"\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "[Auth] Give permissions",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": "/**\n * Check status and headers\n */ \ntests['Status code'] = responseCode.code === 200;\n\n/**\n * Check response body\n */\nconst user = JSON.parse(responseBody);\ntests[\"Permissions granted\"] = !!user.permissions[postman.getEnvironmentVariable('service.domain')].storage;\n"
-					}
-				}
-			],
-			"request": {
-				"url": "{{auth.host}}/v1/users/{{adminUserId}}/permissions",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer {{accessToken}}",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"{{service.domain}}\": {\n  \t\"auth\": {\n  \t\t\"users:read\": true,\n  \t\t\"users:write\": true\n  \t},\n    \"storage\": {\n      \"files:read\": [\"**\"],\n      \"files:write\": [\"**\"]\n    }\n  }\n}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "[Storage] Upload file",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": "/**\n * Check status and headers\n */ \ntests['Status code'] = responseCode.code === 201;\ntests['Header: Location'] = postman.getResponseHeader('Location');\n"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"exec": "const fileContent = 'Some text 2';\npostman.setEnvironmentVariable('fileContent', fileContent);\n"
-					}
-				}
-			],
-			"request": {
-				"url": "{{storage.host}}/dir/file.txt",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{accessToken}}",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{{fileContent}}"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "[Storage] Get file",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": "/**\n * Check status and headers\n */ \ntests['Status code'] = responseCode.code === 200;\n\n/**\n * Check response body\n */\ntests['File content'] = responseBody === postman.getEnvironmentVariable('fileContent');\n"
-					}
-				}
-			],
-			"request": {
-				"url": "{{storage.host}}/dir/file.txt",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{accessToken}}",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "Some text"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "[Storage] Get non-existent file",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": "/**\n * Check status and headers\n */ \ntests['Status code'] = responseCode.code === 404;\n"
-					}
-				}
-			],
-			"request": {
-				"url": "{{storage.host}}/dir/bad-file.txt",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{accessToken}}",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "Some text"
-				},
-				"description": ""
-			},
-			"response": []
-		}
-	]
+  "variables": [],
+  "info": {
+    "name": "Storage REST Service",
+    "_postman_id": "35abf9d3-e623-a2fe-f5ce-fff98d11b54b",
+    "description": "",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "[Auth] Get access token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": "/**\n * Check status and headers\n */ \ntests['Status code'] = responseCode.code === 201;\n\n/**\n * Check response body\n */ \nconst token = JSON.parse(responseBody);\ntests[\"Access granted\"] = !!token.accessToken;\n\n/**\n * Store data\n */\npostman.setEnvironmentVariable('accessToken', token.accessToken);\npostman.setEnvironmentVariable('refreshToken', token.refreshToken);\npostman.setEnvironmentVariable('adminUserId', token.userId);\n"
+          }
+        }
+      ],
+      "request": {
+        "url": "{{auth.host}}/v1/token",
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "username",
+              "value": "admin@test.com",
+              "type": "text",
+              "enabled": true
+            },
+            {
+              "key": "password",
+              "value": "test",
+              "type": "text",
+              "enabled": true
+            },
+            {
+              "key": "grant_type",
+              "value": "password",
+              "type": "text",
+              "enabled": true
+            }
+          ]
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "[Auth] Create user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": "/**\n * Check status and headers\n */ \ntests['Status code'] = responseCode.code === 201;\n\n/**\n * Check response body\n */\nconst user = JSON.parse(responseBody);\ntests['User created'] = user.id !== '';\n\n/**\n * Store data\n */\npostman.setEnvironmentVariable('testUserId', user.id);\n"
+          }
+        }
+      ],
+      "request": {
+        "url": "{{auth.host}}/v1/users",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"storage@test.com\",\n    \"firstName\": \"Test\",\n    \"lastName\": \"User\",\n    \"password\": \"test\"\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "[Auth] Give permissions",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": "/**\n * Check status and headers\n */ \ntests['Status code'] = responseCode.code === 200;\n\n/**\n * Check response body\n */\nconst user = JSON.parse(responseBody);\ntests[\"Permissions granted\"] = !!user.permissions[postman.getEnvironmentVariable('service.group')].storage;\n"
+          }
+        }
+      ],
+      "request": {
+        "url": "{{auth.host}}/v1/users/{{adminUserId}}/permissions",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "description": ""
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"{{service.group}}\": {\n  \t\"auth\": {\n  \t\t\"users:read\": true,\n  \t\t\"users:write\": true\n  \t},\n    \"storage\": {\n      \"files:read\": [\"**\"],\n      \"files:write\": [\"**\"]\n    }\n  }\n}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "[Storage] Upload file",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": "/**\n * Check status and headers\n */ \ntests['Status code'] = responseCode.code === 201;\ntests['Header: Location'] = postman.getResponseHeader('Location');\n"
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": "const fileContent = 'Some text 2';\npostman.setEnvironmentVariable('fileContent', fileContent);\n"
+          }
+        }
+      ],
+      "request": {
+        "url": "{{storage.host}}/dir/file.txt",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{{fileContent}}"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "[Storage] Get file",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": "/**\n * Check status and headers\n */ \ntests['Status code'] = responseCode.code === 200;\n\n/**\n * Check response body\n */\ntests['File content'] = responseBody === postman.getEnvironmentVariable('fileContent');\n"
+          }
+        }
+      ],
+      "request": {
+        "url": "{{storage.host}}/dir/file.txt",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "Some text"
+        },
+        "description": ""
+      },
+      "response": []
+    },
+    {
+      "name": "[Storage] Get non-existent file",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": "/**\n * Check status and headers\n */ \ntests['Status code'] = responseCode.code === 404;\n"
+          }
+        }
+      ],
+      "request": {
+        "url": "{{storage.host}}/dir/bad-file.txt",
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "description": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "Some text"
+        },
+        "description": ""
+      },
+      "response": []
+    }
+  ]
 }

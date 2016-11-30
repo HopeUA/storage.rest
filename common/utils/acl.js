@@ -1,15 +1,14 @@
 import Minimatch from 'minimatch';
-
-const App = require('server/server');
+import App from 'server/server';
 
 export default class Acl {
     static isGranted(user, policy, resource = null) {
         // Get permissions for current service
         const service = App.get('service');
-        if (!(user.permissions[service.domain] && user.permissions[service.domain][service.name])) {
+        if (!(user.permissions[service.group] && user.permissions[service.group][service.name])) {
             return false;
         }
-        const permissions = user.permissions[service.domain][service.name];
+        const permissions = user.permissions[service.group][service.name];
 
         // Check current
         if (!permissions[policy]) {
