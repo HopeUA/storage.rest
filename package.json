@@ -1,7 +1,7 @@
 {
   "name": "storage.rest",
   "description": "Hope Storage Service",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "server/server.js",
   "license": "MIT",
   "author": "Sergey Sadovoi <sergey@hope.ua>",
