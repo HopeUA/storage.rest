@@ -8,6 +8,19 @@ import Acl from 'common/utils/acl';
 
 const config = App.get('service');
 
+function saveFile(reqStream, fileStream) {
+    return new Promise((resolve, reject) => {
+        reqStream.pipe(fileStream);
+        reqStream.on('end', () => {
+            return resolve();
+        });
+        reqStream.on('error', (error) => {
+            return reject(error);
+        })
+    });
+}
+
+
 module.exports = () => {
     return wrap(async (req, res) => {
         if (!Acl.isGranted(req.user, 'files:write', req.path)) {
@@ -33,7 +46,7 @@ module.exports = () => {
         await Fs.ensureDirAsync(pathInfo.dir);
 
         const stream = Fs.createWriteStream(filePath);
-        req.pipe(stream);
+        await saveFile(req, stream);
 
         res.status(201);
         res.header({
