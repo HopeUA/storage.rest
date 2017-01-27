@@ -1,7 +1,7 @@
 {
   "name": "storage.rest",
   "description": "Hope Storage Service",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "main": "server/server.js",
   "license": "MIT",
   "author": "Sergey Sadovoi <sergey@hope.ua>",
@@ -14,13 +14,13 @@
   },
   "dependencies": {
     "@hope/error": "^1.0.1",
-    "babel-plugin-transform-async-to-generator": "^6.16.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
-    "babel-register": "^6.18.0",
+    "babel-plugin-transform-async-to-generator": "^6.22.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.22.0",
+    "babel-register": "^6.22.0",
     "fs-extra-promise": "^0.4.1",
-    "loopback": "^2.36.0",
+    "loopback": "^3.2.1",
     "loopback-boot": "^2.23.0",
-    "loopback-datasource-juggler": "^2.53.0",
+    "strong-error-handler": "^1.0.1",
     "minimatch": "^3.0.3",
     "node-fetch": "^1.6.3"
   },
@@ -31,7 +31,7 @@
     ]
   },
   "devDependencies": {
-    "newman": "^3.3.0",
+    "newman": "^3.4.2",
     "nodemon": "^1.11.0"
   },
   "repository": {
