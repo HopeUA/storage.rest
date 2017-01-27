@@ -6,6 +6,7 @@ module.exports = () => {
         const App = req.app;
         const User = App.models.User;
         const config = App.get('services');
+        const service = App.get('service');
 
         const accessToken = req.headers.authorization ? req.headers.authorization.replace('Bearer ', '') : null;
 
@@ -21,11 +22,17 @@ module.exports = () => {
         }
 
         function getAnonymousUser() {
+            const permissions = service.anonymousPermissions ? {
+                [service.group]: {
+                    [service.name]: service.anonymousPermissions
+                }
+            } : {};
+
             return new User({
                 id: '',
                 firstName: "Anonymous",
                 email: "guest@hope.ua",
-                permissions: {}
+                permissions
             });
         }
 

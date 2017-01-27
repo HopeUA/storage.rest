@@ -14,6 +14,7 @@
   "service":{
     "group": "default",
     "name": "storage",
-    "rootPath": "files"
+    "rootPath": "files",
+    "anonymousPermissions": {}
   }
 }
